@@ -1,15 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const controllerMemo = require('../controllers/memo')
+const helperJwt = require('../helpers/jwtVerify')
 
 
-
-router.get('/', controllerMemo.getAll)
-router.get('/:id', controllerMemo.getDetail)
-router.get('/user/:user', controllerMemo.getByUser)
-router.post('/', controllerMemo.insert)
-router.delete('/:id', controllerMemo.delete)
-router.put('/:id', controllerMemo.update)
+router.get('/', helperJwt.verifyTokenAdminAndUser, controllerMemo.getAll)
+router.get('/:id', helperJwt.verifyTokenAdminAndUser,controllerMemo.getDetail)
+router.post('/', helperJwt.verifyTokenAdminAndUser,controllerMemo.insert)
+router.delete('/:id', helperJwt.verifyTokenAdminAndUser,controllerMemo.delete)
+router.put('/:id', helperJwt.verifyTokenAdminAndUser, controllerMemo.update)
 
 
 

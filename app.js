@@ -1,8 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const passport = require('passport')
-const localStrategy = require('passport-local').Strategy
 const mongoose = require('mongoose')
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+const passportHelper = require('./helpers/passport')
 
 var mongoDB = 'mongodb://localhost/web-api-express'
 mongoose.Promise = require('bluebird')
@@ -12,7 +13,10 @@ mongoose.connect(mongoDB, ()=>{
 
 var users = require('./routes/users')
 var memos = require('./routes/memos')
+
+passport.use(new LocalStrategy(passportHelper))
 const app = express()
+app.use(passport.initialize());
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended : false}))

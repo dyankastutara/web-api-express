@@ -2,7 +2,7 @@ const Memo = require('../models/memo')
 
 module.exports = {
 	getAll : (req, res)=>{
-		Memo.find({})
+		Memo.find({user:req.decoded.id})
 		.populate('user')
 		.then(result =>{
 			res.send(result)
@@ -15,26 +15,17 @@ module.exports = {
 		Memo.findById(req.params.id)
 		.populate('user')
 		.then(result=>{
+			console.log(result)
 			res.send(result)
 		})
 		.catch(err=>{
 			res.send(err)
 		})
 	},
-	getByUser : (req, res)=>{
-		console.log(req.params.user)
-		Memo.find({user:req.params.user})
-		.then(result =>{
-			res.send(result)
-		})
-		.catch(err =>{
-			res.send(err)
-		})
-	},
 	insert : (req, res)=>{
 		var insertMemo = new Memo({
 			memo : req.body.memo,
-			user : req.body.user
+			user : req.decoded.id
 		})
 
 		insertMemo.save((error, response)=>{
