@@ -5,11 +5,8 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const passportHelper = require('./helpers/passport')
 
-var mongoDB = 'mongodb://localhost/web-api-express'
 mongoose.Promise = require('bluebird')
-mongoose.connect(mongoDB, ()=>{
-	console.log("Connected to "+mongoDB)
-})
+
 
 var users = require('./routes/users')
 var memos = require('./routes/memos')
@@ -26,3 +23,5 @@ app.use('/api/memos', memos)
 app.listen(3000, ()=>{
 	console.log("You access port 3000")
 })
+
+module.exports = app
