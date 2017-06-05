@@ -5,22 +5,19 @@ require('dotenv').config()
 
 module.exports = {
 	signup : (req, res)=>{
-		User.findOne({username : req.body.username})
+		User.findOne({
+			username : req.body.username
+		})
 		.then(result=>{
-			if(result){
-				res.send('this username already exists')
-			}else{
-				User.findOne({email : req.body.email})
-				.then(response=>{
-					console.log(response)
-					if(response){
-						res.send('This email is already registered')
-					}else{
+			if(!result){		
+			User.findOne({email : req.body.email})
+				.then(query=>{
+					if(!query){
 						var insertUser = new User({
 							name : req.body.name,
 							email : req.body.email,
 							username : req.body.username,
-							password : bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+							password : bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(Number(process.env.SALT))),
 							role : req.body.role || 'user'
 						})
 
@@ -30,12 +27,16 @@ module.exports = {
 							}else{
 								res.send(error)
 							}
-						})		
+						})
+					}else{
+						res.send('This email is already registered')		
 					}
 				})
 				.catch(error=>{
 					res.send(error)
-				})
+				})		
+			}else{
+				res.send('This username already exists')
 			}
 		})
 		.catch(err=>{
@@ -55,8 +56,7 @@ module.exports = {
 				role : user.role
 			}, process.env.JWT_SECRET, {expiresIn : '1h'})
 			res.send({
-				token : token,
-				msg : user.msg
+				token : token
 			})
 		}
 	},
@@ -86,7 +86,6 @@ module.exports = {
 			}else{
 				User.findOne({email : req.body.email})
 				.then(response=>{
-					console.log(response)
 					if(response){
 						res.send('This email is already registered')
 					}else{
@@ -94,7 +93,7 @@ module.exports = {
 							name : req.body.name,
 							email : req.body.email,
 							username : req.body.username,
-							password : bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+							password : bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(Number(process.env.SALT))),
 							role : req.body.role || 'user'
 						})
 
@@ -128,7 +127,7 @@ module.exports = {
 	update : (req, res)=>{
 		User.findById(req.params.id)
 		.then(result=>{
-			User.updateOne({
+			result.updateOne({
 				name : req.body.name || result.name,
 				email : req.body.email || result.email,
 				username : req.body.username || result.username,

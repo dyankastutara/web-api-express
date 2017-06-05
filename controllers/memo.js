@@ -15,7 +15,6 @@ module.exports = {
 		Memo.findById(req.params.id)
 		.populate('user')
 		.then(result=>{
-			console.log(result)
 			res.send(result)
 		})
 		.catch(err=>{
@@ -39,7 +38,10 @@ module.exports = {
 	delete : (req, res)=>{
 		Memo.deleteOne({_id : req.params.id})
 		.then((result)=>{
-			res.send(result)
+			res.send({
+				result : result,
+				msg : `You delete the data with id ${req.params.id}`
+			})
 		})
 		.catch(err=>{
 			res.send(err)
@@ -53,7 +55,10 @@ module.exports = {
 				user : result.user
 			})
 			.then(response=>{
-				res.send(response)
+				res.send({
+					result : response,
+					msg : `You update the data with id ${req.params.id}`
+				})
 			})
 			.catch(error=>{
 				res.send(error)

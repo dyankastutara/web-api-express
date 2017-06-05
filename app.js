@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const passportHelper = require('./helpers/passport')
-
+const cors = require('cors')
 mongoose.Promise = require('bluebird')
 
 
@@ -15,6 +15,7 @@ passport.use(new LocalStrategy(passportHelper))
 const app = express()
 app.use(passport.initialize());
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended : false}))
 app.use('/api/users', users)

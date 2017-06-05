@@ -1,6 +1,6 @@
 const User = require('../models/user.js');
 const passport = require('passport');
-var bcrypt   = require('bcrypt');
+var bcrypt = require('bcrypt');
 
 let passportLocal = (username, password, next) => {
   User.findOne({username: username}, (err, user) => {
